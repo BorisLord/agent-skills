@@ -1,0 +1,28 @@
+id: traefik-swarm-compatibility
+title: Diagnose Swarm and Traefik deployment semantics
+description: Verifies that the skill distinguishes Swarm from Compose and explains rollout monitoring time.
+
+input:
+  prompt: |
+    Review a file consumed by `docker stack deploy`. It defines Traefik labels
+    under `services.web.labels`, relies on inferred port 8080, selects the edge
+    network with `traefik.docker.network=edge`, and declares
+    `security_opt: [no-new-privileges:true]`. Deployment prints
+    `Ignoring unsupported options: security_opt`. Its update policy uses
+    `parallelism: 1`, `order: start-first`, and `monitor: 210s`; a rollout takes
+    almost six minutes. Explain every relevant issue, give supported fixes, and
+    describe effective-state checks. Do not suggest reducing the monitor window
+    without measured health evidence.
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all:
+          - "docker stack deploy"
+          - "security_opt"
+          - "deploy.labels"
+          - "traefik.swarm.network"
+          - "loadbalancer.server.port"
+          - "monitor"
+          - "effective"

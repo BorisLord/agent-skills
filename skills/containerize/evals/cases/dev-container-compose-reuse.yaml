@@ -1,0 +1,69 @@
+id: dev-container-compose-reuse
+title: Reuse an existing Compose stack for development
+description: Verifies that a Dev Container extends the application stack without changing the production image.
+
+context:
+  files:
+    "compose.yaml": |
+      services:
+        app:
+          build:
+            context: .
+            target: development
+          volumes:
+            - .:/workspace
+          depends_on:
+            - database
+        database:
+          image: docker.io/library/postgres:18
+    "Dockerfile": |
+      FROM docker.io/library/golang:1.25-bookworm AS development
+      WORKDIR /workspace
+      FROM development AS build
+      COPY . .
+      RUN go build -o /out/app ./cmd/app
+      FROM gcr.io/distroless/base-debian12 AS production
+      COPY --from=build /out/app /app
+      USER 10001:10001
+      ENTRYPOINT ["/app"]
+    "go.mod": |
+      module example.test/app
+
+      go 1.25
+    "cmd/app/main.go": |
+      package main
+
+      func main() {}
+
+input:
+  prompt: |
+    Add a Dev Container that reuses the existing Compose service graph and
+    connects the editor to `app` at `/workspace`. Run editor and lifecycle
+    commands as `vscode`, install the VS Code Go extension, forward port 8080,
+    and run `go mod download` after creation. Do not alter the production stage
+    or duplicate the database service. You may decide remaining reversible
+    details and implement the configuration now.
+
+expect:
+  files_exist:
+    - ".devcontainer/devcontainer.json"
+  file_contains:
+    - path: ".devcontainer/devcontainer.json"
+      content: "compose.yaml"
+    - path: ".devcontainer/devcontainer.json"
+      content: "app"
+    - path: ".devcontainer/devcontainer.json"
+      content: "/workspace"
+    - path: ".devcontainer/devcontainer.json"
+      content: "vscode"
+    - path: ".devcontainer/devcontainer.json"
+      content: "golang.go"
+    - path: ".devcontainer/devcontainer.json"
+      content: "8080"
+    - path: ".devcontainer/devcontainer.json"
+      content: "go mod download"
+
+judge:
+  type: rule_based
+  success:
+    - exit_code: 0

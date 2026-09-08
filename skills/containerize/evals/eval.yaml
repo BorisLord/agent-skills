@@ -1,0 +1,32 @@
+schema_version: v1alpha1
+
+environment:
+  type: none
+
+skills:
+  - source: local_path
+    path: .
+    include:
+      - SKILL.md
+      - references/**
+
+engine:
+  name: codex
+
+cases:
+  files:
+    - evals/cases/traefik-compose-isolation.yaml
+    - evals/cases/traefik-swarm-compatibility.yaml
+    - evals/cases/docker-api-boundary.yaml
+    - evals/cases/podman-module-isolation.yaml
+    - evals/cases/dev-container-compose-reuse.yaml
+    - evals/cases/container-scope-boundary.yaml
+  defaults:
+    timeout_seconds: 300
+    max_turns: 8
+    expect:
+      exit_code: 0
+  parallelism: 1
+
+report:
+  formats: [json]

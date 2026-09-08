@@ -1,0 +1,25 @@
+id: container-scope-boundary
+title: Distinguish supported containers from unrelated meanings
+description: Verifies that Dev Containers are supported while other container families are explicitly out of scope.
+
+input:
+  prompt: |
+    Classify whether this skill supports each of these requests: a Dev Container
+    for an existing Compose application, an Incus system container, a Windows
+    process-isolated image, an Apptainer Slurm job, and a dependency-injection
+    container. Explain the boundary only; do not create files.
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all:
+          - "Dev Container"
+          - "Incus"
+          - "Windows"
+          - "Apptainer"
+    - output_matches:
+        all:
+          - "(?i)(supported|in scope)"
+          - "(?i)(not supported|out of scope)"
+          - "(?i)dependency[- ]injection"

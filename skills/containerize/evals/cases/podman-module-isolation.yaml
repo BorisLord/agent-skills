@@ -1,0 +1,48 @@
+id: podman-module-isolation
+title: Keep unrelated proxy guidance out of a Podman task
+description: Verifies progressive disclosure for a rootless Quadlet service without an ingress proxy.
+
+context:
+  files:
+    "README.md": |
+      # Worker fixture
+
+      The runtime contract is intentionally not documented.
+
+constraints:
+  timeout_seconds: 600
+  max_turns: 8
+
+input:
+  prompt: |
+    Design a rootless Podman Quadlet unit for one internal long-running worker.
+    It uses image registry.example/worker@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, runs as numeric UID:GID
+    10001:10001, writes only to /var/lib/worker, reads the pre-created Podman
+    secret worker-token, supports `/app/worker health`, logs to journald, and
+    should restart on failure after 10 seconds. It has no inbound port, reverse
+    proxy, Docker API consumer, or additional service. You may decide remaining
+    reversible details; provide the unit and systemd validation now.
+
+expect:
+  must_not_contain:
+    - "Traefik"
+  files_exist:
+    - "worker.container"
+  file_contains:
+    - path: "worker.container"
+      content: "[Container]"
+    - path: "worker.container"
+      content: "User=10001"
+    - path: "worker.container"
+      content: "Group=10001"
+    - path: "worker.container"
+      content: "Secret=worker-token"
+    - path: "worker.container"
+      content: "ReadOnly=true"
+    - path: "worker.container"
+      content: "Restart=on-failure"
+
+judge:
+  type: rule_based
+  success:
+    - exit_code: 0

@@ -1,0 +1,28 @@
+id: docker-api-boundary
+title: Protect Docker API access used for discovery
+description: Ensures that a read-only Unix socket mount is not mistaken for API authorization.
+
+input:
+  prompt: |
+    A reverse proxy needs Docker discovery events. An operator proposes mounting
+    `/var/run/docker.sock` read-only and says this prevents Docker API writes.
+    Assess the claim and design the simplest stronger control. Include network
+    placement, authorization policy, allowed discovery behavior, denied
+    mutations, remote API transport, and validation evidence. Do not perform any
+    host changes.
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all:
+          - "not"
+          - "deny-by-default"
+          - "authorization proxy"
+          - "SSH"
+          - "TLS"
+          - "POST"
+    - output_matches:
+        all:
+          - "(?i)(read[- ]only|:ro)"
+          - "(?i)docker[- ]api"

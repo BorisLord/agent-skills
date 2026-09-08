@@ -1,0 +1,4 @@
+interface:
+  display_name: "Container Engineering"
+  short_description: "Design OCI and development containers"
+  default_prompt: "Use $containerize to inspect this project, ask me the material design questions, then build or improve its portable container configuration."

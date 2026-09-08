@@ -1,0 +1,28 @@
+id: traefik-compose-isolation
+title: Isolate a Compose stack behind shared Traefik
+description: Detects unsafe shared-network membership, host ports, automatic discovery, and direct Docker socket access.
+
+input:
+  prompt: |
+    Audit this production Docker Compose design without editing files. Traefik,
+    api, postgres, valkey, and a worker all join an external `edge` network.
+    Postgres publishes 5432 and Valkey publishes 6379 on every host address.
+    Traefik has `/var/run/docker.sock:/var/run/docker.sock:ro` and its Docker
+    provider uses `exposedByDefault: true`. The API also needs private access to
+    Postgres and Valkey. Give the smallest secure network and discovery design,
+    explain the socket risk, and state how you would prove allowed and denied
+    connectivity.
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all:
+          - "exposedByDefault"
+          - "traefik.enable=true"
+          - "traefik.docker.network"
+          - "read-only"
+          - "socket"
+          - "Postgres"
+          - "Valkey"
+          - "probe"
