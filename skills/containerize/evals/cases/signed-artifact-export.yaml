@@ -1,0 +1,24 @@
+id: signed-artifact-export
+title: Support containerized signed artifact exports
+description: Verifies that a non-Alpine package exported by BuildKit is in scope without requiring a runtime image.
+
+input:
+  prompt: |
+    We use a multi-stage Dockerfile to build a Debian `.deb`, export it with
+    BuildKit's local exporter, and publish the package with a checksum,
+    signature, SBOM, and provenance. There is intentionally no runtime image.
+    Classify whether this work is supported and outline the release and key
+    handling requirements. Do not create files.
+
+judge:
+  type: rule_based
+  success:
+    - output_matches:
+        all:
+          - "(?i)(supported|in scope)"
+          - "(?i)(output stage|local.*export|exported (package|artifact|directory))"
+          - "(?i)(secret mount|after export|separate.*sign)"
+          - "(?i)(checksum|digest)"
+          - "(?i)(signature|signed)"
+          - "(?i)(provenance|attestation)"
+          - "(?i)(verify|verification)"

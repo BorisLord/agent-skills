@@ -39,10 +39,10 @@ input:
   prompt: |
     Add a Dev Container that reuses the existing Compose service graph and
     connects the editor to `app` at `/workspace`. Run editor and lifecycle
-    commands as `vscode`, install the VS Code Go extension, forward port 8080,
-    and run `go mod download` after creation. Do not alter the production stage
-    or duplicate the database service. You may decide remaining reversible
-    details and implement the configuration now.
+    commands as `vscode`, install the VS Code Go extension with ID `golang.go`,
+    forward port 8080, and run `go mod download` after creation. Do not alter
+    the production stage or duplicate the database service. You may decide
+    remaining reversible details and implement the configuration now.
 
 expect:
   files_exist:

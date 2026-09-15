@@ -21,6 +21,8 @@ cases:
     - evals/cases/podman-module-isolation.yaml
     - evals/cases/dev-container-compose-reuse.yaml
     - evals/cases/container-scope-boundary.yaml
+    - evals/cases/signed-artifact-export.yaml
+    - evals/cases/package-system-image-boundary.yaml
   defaults:
     timeout_seconds: 300
     max_turns: 8

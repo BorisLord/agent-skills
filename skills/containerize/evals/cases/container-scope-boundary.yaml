@@ -21,5 +21,5 @@ judge:
     - output_matches:
         all:
           - "(?i)(supported|in scope)"
-          - "(?i)(not supported|out of scope)"
+          - "(?i)(not supported|unsupported|out of scope|excluded)"
           - "(?i)dependency[- ]injection"

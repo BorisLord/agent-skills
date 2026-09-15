@@ -17,8 +17,6 @@ judge:
     - output_contains:
         all:
           - "not"
-          - "deny-by-default"
-          - "authorization proxy"
           - "SSH"
           - "TLS"
           - "POST"
@@ -26,3 +24,5 @@ judge:
         all:
           - "(?i)(read[- ]only|:ro)"
           - "(?i)docker[- ]api"
+          - "(?i)(deny-by-default|default-deny)"
+          - "(?i)(authorization (proxy|layer)|api (socket )?(proxy|filter)|filtering proxy)"

@@ -21,7 +21,8 @@ input:
     secret worker-token, supports `/app/worker health`, logs to journald, and
     should restart on failure after 10 seconds. It has no inbound port, reverse
     proxy, Docker API consumer, or additional service. You may decide remaining
-    reversible details; provide the unit and systemd validation now.
+    reversible details; create `worker.container` in the repository root and
+    provide the systemd validation now.
 
 expect:
   must_not_contain:

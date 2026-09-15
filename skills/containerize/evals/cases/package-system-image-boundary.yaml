@@ -1,0 +1,25 @@
+id: package-system-image-boundary
+title: Distinguish packages from bootable system images
+description: Verifies that Alpine package builds are supported while apkovl and custom ISO production are handed off.
+
+input:
+  prompt: |
+    Classify two requests. The first uses an `APKBUILD` and `abuild` inside a
+    Containerfile to export signed `.apk` packages. The second uses `lbu` and
+    `mkimage` inside a Containerfile to produce an `.apkovl.tar.gz` and a
+    bootable Alpine ISO. Explain the boundary and required handoff only; do not
+    create files or provide Alpine provisioning instructions.
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all:
+          - "APKBUILD"
+          - "apkovl"
+          - "ISO"
+    - output_matches:
+        all:
+          - "(?i)(supported|in scope|containerize scope|containeri[sz]ation scope)"
+          - "(?i)(unsupported|out of scope|outside.*scope|does not make.*containeri[sz]ation work)"
+          - "(?i)(hand|transfer|route)"
