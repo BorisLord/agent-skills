@@ -1,18 +1,20 @@
 # Container security
 
-## Build inputs and provenance
+## Build inputs, artifacts, and provenance
 
 - Use trusted official or organization-controlled registries and fully qualified image references.
 - Pin images by digest and use an automated updater to surface refreshes as reviewed changes.
 - Keep dependency lockfiles and verify downloaded artifacts, release signatures, or checksums.
-- Generate SBOM and provenance attestations when the delivery pipeline consumes them.
-- Sign published immutable digests when required, and enforce verification against an expected identity and issuer in the promotion or deployment path.
+- Generate SBOM and provenance attestations when the delivery pipeline consumes them. Bind provenance subjects to the final artifact digests, and call provenance signed only when its delivery mechanism authenticates it.
+- Sign published immutable image or artifact digests when required, and enforce verification against an expected identity and issuer in the promotion, installation, or deployment path.
+- Keep checksums, signatures, and provenance distinct: checksums detect byte changes, signatures authenticate an artifact or digest, and provenance records how an artifact was produced.
 - Do not execute remote installation scripts without pinning and verification.
 
 ## Secrets
 
 - Exclude credentials, environment files, private keys, certificates, cloud config, and runtime secret directories from build contexts.
 - Use BuildKit/Buildah secret and SSH mounts for build-time authentication.
+- Prefer signing final artifacts in a separate, non-cached release step. When native tooling must sign during a BuildKit build, use a required secret mount, deliberately invalidate the signing step when the signing identity changes, and inspect the export for key material.
 - Use orchestrator secrets or read-only runtime mounts for runtime credentials.
 - Never store secrets in `ARG`, `ENV`, image labels, layers, build logs, Compose files, or Git history.
 - Treat build arguments as public metadata: they can appear in image history, generated frontend assets, or provenance attestations. Classify every value by build-time versus runtime and browser-visible versus server-only exposure.
@@ -71,3 +73,5 @@ Fail releases on an explicit policy, not an arbitrary count. Avoid switching fro
 - [Kubernetes security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
 - [OCI image specification](https://github.com/opencontainers/image-spec)
 - [Cosign signature verification](https://docs.sigstore.dev/cosign/verifying/verify/)
+- [Cosign blob signing](https://docs.sigstore.dev/cosign/signing/signing_with_blobs/)
+- [SLSA build provenance](https://slsa.dev/spec/v1.2/build-provenance)

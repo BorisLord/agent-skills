@@ -32,6 +32,16 @@ Verify cache behavior by forcing the build step to run after a source-only chang
 - Copy certificates or timezone data deliberately for scratch/distroless targets.
 - Preserve ownership with `COPY --chown` where supported or set ownership in a controlled layer.
 
+## Exported software artifacts
+
+A containerized build may export binaries, packages, archives, checksums, signatures, SBOMs, or provenance without producing a runtime image.
+
+- Use a dedicated output stage containing only the intended deliverables and sidecars. Export it with the BuildKit `local` or `tar` exporter; do not copy the builder filesystem wholesale.
+- Define exact output names, formats, versions, target architectures, and consumers. Use each ecosystem's canonical build and verification tools rather than distribution-specific substitutes.
+- Keep platform outputs in separate directories unless their names are guaranteed not to collide. Verify every published architecture with its intended consumer.
+- Calculate release checksums after all transformations and signing so they describe the final published bytes. Do not confuse source checksums maintained by a package recipe with checksums of the finished packages.
+- Treat an exported directory as a release boundary: inspect it for source, caches, credentials, private keys, and other undeclared files before publication.
+
 ## Build context
 
 The build context is available to the builder even when files are never copied into the final image. Exclude secrets, VCS data, local dependencies, test artifacts, logs, environment files, certificates, keys, and build outputs.
@@ -74,5 +84,7 @@ When byte-for-byte reproducibility matters, also control package snapshots, tool
 - [Docker cache optimization](https://docs.docker.com/build/cache/optimize/)
 - [Docker build contexts and Dockerfile-specific ignore files](https://docs.docker.com/build/concepts/context/)
 - [Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
+- [Docker local and tar exporters](https://docs.docker.com/build/exporters/local-tar/)
+- [Docker build attestations](https://docs.docker.com/build/metadata/attestations/)
 - [Podman build reference](https://docs.podman.io/en/latest/markdown/podman-build.1.html)
 - [Buildah build and remote cache behavior](https://github.com/containers/buildah/blob/main/docs/buildah-build.1.md)
