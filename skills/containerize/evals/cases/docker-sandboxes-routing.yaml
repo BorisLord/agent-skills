@@ -1,0 +1,21 @@
+id: docker-sandboxes-routing
+title: Route Docker Sandboxes tasks to their official skills
+description: Keeps standalone sbx product workflows outside generic container engineering.
+
+input:
+  prompt: |
+    I invoked containerize, but my task is about Docker Sandboxes. Map these
+    four requests to the owning official Docker skills: create and reattach a
+    standalone `sbx` sandbox; configure its network policy and credentials;
+    author an `sbxenv.yaml`; and publish an `sbx kit` with `spec.yaml`.
+    Give routing only, without creating project files or running commands.
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all:
+          - "docker-sandboxes-lifecycle"
+          - "docker-sandboxes-network-credentials"
+          - "docker-sandboxes-env"
+          - "docker-sandboxes-kits"

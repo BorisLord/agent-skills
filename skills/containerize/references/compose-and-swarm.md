@@ -5,7 +5,7 @@ Use this module whenever authoring, migrating, deploying, or auditing a Compose 
 ## Consumer contract
 
 - Identify the exact command used in development, CI, and deployment.
-- Render and validate with that command. For Swarm, treat every `Ignoring unsupported options` warning as an unresolved configuration defect until the effective service state proves the intended control exists another supported way.
+- Validate with the exact consumer without emitting resolved secrets, then inspect the effective configuration and runtime state. For Swarm, treat every `Ignoring unsupported options` warning as an unresolved configuration defect until the effective service state proves the intended control exists another supported way.
 - Keep separate deployment files when one shared file would hide meaningful incompatibilities. Duplication of a small manifest is cheaper than ambiguous security behavior.
 - Build and push images before `docker stack deploy`; Swarm does not build them. Deploy immutable digests when promotion and rollback identity matter.
 - Inspect the resulting containers or Swarm services. A parsed field is not evidence that the runtime enforced it.
@@ -31,9 +31,11 @@ Use this module whenever authoring, migrating, deploying, or auditing a Compose 
 
 ## Validation
 
+For Docker Compose, use `docker compose config --quiet` when only validation is needed; the ordinary `config` output can contain interpolated variables and resolved environment files. Do not discard the exit status or silence diagnostics to hide secrets: inspect failures, then report redacted details. When the effective model must be reviewed, select only the needed fields and redact sensitive values before they reach tool output, logs, or the response. Quiet validation does not prove that a running container or Swarm service enforces the intended settings.
+
 For every deployment profile:
 
-1. render with the exact consumer and fail on ignored or unsupported security fields;
+1. validate with the exact consumer, inspect the relevant effective fields without exposing secrets, and fail on ignored or unsupported security fields;
 2. inspect image digest, command, user, mounts, secrets/configs, networks, endpoint ports, privileges, capabilities, read-only state, limits, restart, health, and update/rollback policy;
 3. test startup from an empty host or node, dependency delay, dependency restart, normal termination, application failure, and failed rollout;
 4. verify allowed network paths and denied cross-stack/backend paths;
@@ -43,6 +45,7 @@ For every deployment profile:
 ## Canonical references
 
 - [Docker Compose Specification](https://docs.docker.com/reference/compose-file/)
+- [Docker Compose config command](https://docs.docker.com/reference/cli/docker/compose/config/)
 - [Compose deploy specification](https://docs.docker.com/reference/compose-file/deploy/)
 - [Docker stack deployment](https://docs.docker.com/engine/swarm/stack-deploy/)
 - [Docker Swarm services](https://docs.docker.com/engine/swarm/services/)

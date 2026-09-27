@@ -1,0 +1,19 @@
+id: docker-agent-routing
+title: Route Docker Agent tasks to their official skills
+description: Distinguishes agent configuration, execution, and distribution from OCI deployment.
+
+input:
+  prompt: |
+    I invoked containerize, but I need to configure Docker Agent's
+    `agent.yaml`, run it with an approval mode, then serve it over MCP and
+    evaluate it in CI. Map these parts to the owning official Docker skills.
+    Give routing only, without editing a Dockerfile or running commands.
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all:
+          - "docker-agent-config"
+          - "docker-agent-run"
+          - "docker-agent-deploy"

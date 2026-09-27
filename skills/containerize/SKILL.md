@@ -4,7 +4,7 @@ description: Build, review, harden, or debug OCI application images, Dev Contain
 license: MIT
 metadata:
   author: BorisLord
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Containerize
@@ -14,6 +14,8 @@ Engineer the smallest container solution that satisfies verified build, runtime,
 Scope is OCI application and development containers plus OCI-containerized builds that export software release artifacts such as binaries, APK/DEB/RPM packages, local or tar outputs, checksums, signatures, SBOMs, and provenance. The build container may be an execution environment rather than the deliverable. LXC/LXD/Incus/systemd-nspawn, Windows containers, Apptainer/Singularity, and bootable operating-system, root-filesystem, ISO, disk, or VM images are unsupported. For Kubernetes and Cloud Run, cover only the image-level container contract, not manifests, clusters, IAM, autoscaling, or platform networking.
 
 Classify by the intended output and consumer, not by the presence of a Containerfile. If the output is an `.apkovl.tar.gz`, bootable root filesystem, ISO, disk or VM image, kernel, or initramfs, or the repository uses Alpine `lbu`, `setup-alpine`, `setup-bootable`, or `mkimage` to configure an operating system for boot, identify it as system-image or Linux provisioning work and hand it off to an applicable skill. Do not trigger this handoff for `.apk` packages, `APKBUILD`, `abuild`, or a Containerfile used only to build and export software artifacts.
+
+Docker Sandboxes (`sbx`) and Docker Agent (`docker agent`) are separate AI-agent products. For their configuration or lifecycle, use [docker-ai-products.md](references/docker-ai-products.md) to find the owning official Docker skill. Use this skill only for any image or container-engineering part of a mixed task.
 
 ## Module routing
 
@@ -30,6 +32,7 @@ Load only the applicable modules; combine them when a task crosses boundaries:
 - [traefik-and-network-security.md](references/traefik-and-network-security.md) when Traefik, a shared reverse proxy, multi-stack ingress, or container network isolation is in scope;
 - [docker-engine-security.md](references/docker-engine-security.md) when a Docker daemon, API endpoint, socket mount, authorization proxy, rootless mode, or daemon configuration is in scope;
 - [podman-and-delivery.md](references/podman-and-delivery.md) for Podman, Buildah, Skopeo, rootless containers, or Quadlet;
+- [destructive-operations.md](references/destructive-operations.md) before proposing or running Docker/Podman cleanup, forced removal, pruning, resets, or data-deleting deployment commands;
 - [security.md](references/security.md) for image and exported-artifact secrets, signatures, provenance, package, privilege, and runtime controls;
 - [release-and-deployment.md](references/release-and-deployment.md) for CI publication and immutable promotion of images or exported software artifacts, migrations, rollback, and rollout policy;
 - [container-security-audit.md](references/container-security-audit.md) for a security audit or after implementing hardening controls.

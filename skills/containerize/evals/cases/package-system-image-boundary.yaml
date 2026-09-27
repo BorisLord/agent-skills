@@ -20,6 +20,6 @@ judge:
           - "ISO"
     - output_matches:
         all:
-          - "(?i)(supported|in scope|containerize scope|containeri[sz]ation scope)"
-          - "(?i)(unsupported|out of scope|outside.*scope|does not make.*containeri[sz]ation work)"
+          - "(?i)(supported|in scope|containerized software-artifact build|packages are the deliverable)"
+          - "(?i)(unsupported|out of scope|outside.*scope|system-image.*provisioning)"
           - "(?i)(hand|transfer|route)"

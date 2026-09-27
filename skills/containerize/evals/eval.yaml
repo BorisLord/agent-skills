@@ -23,6 +23,11 @@ cases:
     - evals/cases/container-scope-boundary.yaml
     - evals/cases/signed-artifact-export.yaml
     - evals/cases/package-system-image-boundary.yaml
+    - evals/cases/destructive-compose-volume.yaml
+    - evals/cases/destructive-podman-reset.yaml
+    - evals/cases/compose-secret-output.yaml
+    - evals/cases/docker-sandboxes-routing.yaml
+    - evals/cases/docker-agent-routing.yaml
   defaults:
     timeout_seconds: 300
     max_turns: 8

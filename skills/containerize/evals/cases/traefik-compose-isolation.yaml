@@ -20,9 +20,11 @@ judge:
         all:
           - "exposedByDefault"
           - "traefik.enable=true"
-          - "traefik.docker.network"
           - "read-only"
           - "socket"
           - "Postgres"
           - "Valkey"
           - "probe"
+    - output_matches:
+        all:
+          - "(?i)(traefik\\.docker\\.network|default provider network|(select|specify).*edge.*network)"

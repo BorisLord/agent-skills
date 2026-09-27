@@ -19,10 +19,10 @@ judge:
           - "not"
           - "SSH"
           - "TLS"
-          - "POST"
     - output_matches:
         all:
           - "(?i)(read[- ]only|:ro)"
           - "(?i)docker[- ]api"
-          - "(?i)(deny-by-default|default-deny)"
+          - "(?i)(deny[- ]by[- ]default|default[- ]deny)"
           - "(?i)(authorization (proxy|layer)|api (socket )?(proxy|filter)|filtering proxy)"
+          - "(?i)(POST|mutation|write request)"
