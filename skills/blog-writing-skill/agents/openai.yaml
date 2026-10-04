@@ -1,0 +1,4 @@
+interface:
+  display_name: "Editorial Article Writing"
+  short_description: "Turn ideas into site-aware, polished SEO articles"
+  default_prompt: "Use $blog-writing-skill to develop my idea for this website, propose a tone, angle and outline for approval, then draft and revise the article."
