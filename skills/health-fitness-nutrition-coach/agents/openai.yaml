@@ -1,0 +1,4 @@
+interface:
+  display_name: "Health, Fitness, and Nutrition Coach"
+  short_description: "Conservative health and habit tracking"
+  default_prompt: "Use $health-fitness-nutrition-coach to assess my situation and recommend the next useful action."

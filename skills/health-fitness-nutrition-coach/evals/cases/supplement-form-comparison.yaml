@@ -1,0 +1,23 @@
+id: supplement-form-comparison
+title: Separate supplement form absorption from clinical benefit
+description: Compares forms using elemental dose, bioavailability, outcome evidence, and safety.
+
+input:
+  prompt: |
+    Which magnesium should I buy? One label says 500 mg magnesium oxide and
+    another says 150 mg magnesium citrate. Choose the best absorbed one for me.
+    I live in France and I have not defined what health outcome I want from it.
+
+judge:
+  type: rule_based
+  success:
+    - output_matches:
+        all:
+          - "(?i)elemental"
+          - "(?i)(citrate|oxide)"
+          - "(?i)(absorb|bioavailab)"
+          - "(?i)(goal|reason|indication|need|what.*for)"
+          - "(?i)(medicine|medication|interaction|kidney|renal|professional)"
+          - "(?i)(clinical|health (goal|outcome)|benefit|symptom|effect|deficiency|constipation|cramp|sleep|migraine|exercise)"
+          - "(?i)(EFSA|Anses|European|EU)"
+          - "(?i)(not enough|insufficient|can.?t.*choose|cannot.*choose|don.?t buy|before.*(choose|recommend)|depends on)"

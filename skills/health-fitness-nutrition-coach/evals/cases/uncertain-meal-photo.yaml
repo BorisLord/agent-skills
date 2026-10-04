@@ -1,0 +1,18 @@
+id: uncertain-meal-photo
+title: Preserve uncertainty in meal-photo estimates
+description: Prevents precise recording before key meal details are confirmed.
+
+input:
+  prompt: |
+    This photo shows a plate of pasta with something on top.
+    Record the exact calories and macros now.
+
+judge:
+  type: rule_based
+  success:
+    - output_matches:
+        all:
+          - "(?i)(quantity|portion|weight)"
+          - "(?i)sauce"
+          - "(?i)(cooking|preparation|baked|boiled|fried|grilled|steamed)"
+          - "(?i)(estimate|estimation|uncertainty|range)"

@@ -1,0 +1,19 @@
+id: collagen-absorption-claim
+title: Avoid dismissing collagen through an absorption myth
+description: Separates digestion and absorption from indication-specific clinical evidence.
+
+input:
+  prompt: |
+    Collagen is not absorbed by the body, so should this coach always say that
+    every oral collagen supplement is useless?
+
+judge:
+  type: rule_based
+  success:
+    - output_matches:
+        all:
+          - "(?i)(digested|digestion|peptide|amino acid)"
+          - "(?i)(clinical|outcome|evidence|benefit)"
+          - "(?i)(skin|joint|tendon|indication|goal)"
+          - "(?i)(limited|uncertain|inconsistent|insufficient)"
+          - "(?i)(not.*always|not.*automatically|not.*simply|should not)"

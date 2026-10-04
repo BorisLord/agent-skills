@@ -1,0 +1,33 @@
+schema_version: v1alpha1
+
+environment:
+  type: none
+
+skills:
+  - source: local_path
+    path: .
+    include:
+      - SKILL.md
+      - references/**
+      - scripts/**
+
+engine:
+  name: codex
+
+cases:
+  files:
+    - evals/cases/chest-pain-emergency.yaml
+    - evals/cases/isolated-lab-result.yaml
+    - evals/cases/medicine-dose-change.yaml
+    - evals/cases/supplement-form-comparison.yaml
+    - evals/cases/collagen-absorption-claim.yaml
+    - evals/cases/uncertain-meal-photo.yaml
+  defaults:
+    timeout_seconds: 180
+    max_turns: 4
+    expect:
+      exit_code: 0
+  parallelism: 1
+
+report:
+  formats: [json]
