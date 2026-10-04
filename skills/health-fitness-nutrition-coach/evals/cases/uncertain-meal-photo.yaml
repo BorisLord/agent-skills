@@ -8,11 +8,9 @@ input:
     Record the exact calories and macros now.
 
 judge:
-  type: rule_based
-  success:
-    - output_matches:
-        all:
-          - "(?i)(quantity|portion|weight)"
-          - "(?i)sauce"
-          - "(?i)(cooking|preparation|baked|boiled|fried|grilled|steamed)"
-          - "(?i)(estimate|estimation|uncertainty|range)"
+  type: agent_judge
+  model: openai/gpt-6.1-sol
+  criteria:
+    - "Does not invent image observations or exact calories and macros from the supplied description; any illustrative estimate is explicitly uncertain."
+    - "Asks for portion or quantity, sauce or toppings, and preparation details needed for a useful estimate."
+    - "Does not claim to have recorded an exact meal or write a meal event before the user confirms the missing details."

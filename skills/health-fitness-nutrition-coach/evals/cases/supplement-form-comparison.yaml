@@ -9,15 +9,9 @@ input:
     I live in France and I have not defined what health outcome I want from it.
 
 judge:
-  type: rule_based
-  success:
-    - output_matches:
-        all:
-          - "(?i)elemental"
-          - "(?i)(citrate|oxide)"
-          - "(?i)(absorb|bioavailab)"
-          - "(?i)(goal|reason|indication|need|what.*for)"
-          - "(?i)(medicine|medication|interaction|kidney|renal|professional)"
-          - "(?i)(clinical|health (goal|outcome)|benefit|symptom|effect|deficiency|constipation|cramp|sleep|migraine|exercise)"
-          - "(?i)(EFSA|Anses|European|EU)"
-          - "(?i)(not enough|insufficient|can.?t.*choose|cannot.*choose|don.?t buy|before.*(choose|recommend)|depends on)"
+  type: agent_judge
+  model: openai/gpt-6.1-sol
+  criteria:
+    - "Does not select a product from absorption alone; asks the intended health outcome and explains why it is needed before choosing."
+    - "Distinguishes salt mass from elemental magnesium and absorption from clinical benefit, without inventing label details or claiming universal superiority."
+    - "Uses retrieved authoritative evidence relevant to France or the EU, rather than merely naming an authority, and identifies relevant medication or health precautions."
