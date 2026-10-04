@@ -24,14 +24,14 @@ Use this module whenever authoring, migrating, deploying, or auditing a Compose 
 
 - Choose replica count, placement, manager quorum, reservations, limits, restart conditions, update order, parallelism, delay, monitor window, failure ratio, and rollback policy from measured service behavior.
 - `start-first` temporarily overlaps old and new tasks. Budget ports, memory, CPU, volumes, migrations, and backward compatibility for that overlap.
-- A long deployment is not automatically a fault: Swarm waits through configured monitor windows for each update batch. Explain the computed worst-case time and reduce it only when health and rollback evidence support a shorter window.
+- A long deployment is not automatically a fault: `update_config.delay` waits between task groups, while `update_config.monitor` monitors each task update for failure. Account for startup time, `parallelism`, task health, delay, and failure policy when explaining rollout duration; reduce a timing window only when health and rollback evidence support it.
 - Health state, traffic eligibility, task restart, update failure, and rollback are separate mechanisms. Test the complete failure path.
 - Treat node-local volumes as placement and recovery constraints. A replica count greater than one does not make local state highly available.
 - Swarm control-plane traffic is encrypted by default; application data on overlay networks is not. Enable encrypted overlays selectively and measure the performance impact.
 
 ## Validation
 
-For Docker Compose, use `docker compose config --quiet` when only validation is needed; the ordinary `config` output can contain interpolated variables and resolved environment files. Do not discard the exit status or silence diagnostics to hide secrets: inspect failures, then report redacted details. When the effective model must be reviewed, select only the needed fields and redact sensitive values before they reach tool output, logs, or the response. Quiet validation does not prove that a running container or Swarm service enforces the intended settings.
+For Docker Compose, use `docker compose config --quiet` when only validation is needed; the ordinary `config` output can contain interpolated variables and resolved environment files. Capture stdout and stderr separately, preserve the exit status, and sanitize warnings and errors before they reach tool output, logs, or the response because diagnostics may contain interpolated values. When the effective model must be reviewed, select only the needed fields and redact sensitive values before exposure. Quiet validation does not prove that a running container or Swarm service enforces the intended settings.
 
 For every deployment profile:
 

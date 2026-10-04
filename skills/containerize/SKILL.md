@@ -4,7 +4,7 @@ description: Build, review, harden, or debug OCI application images, Dev Contain
 license: MIT
 metadata:
   author: BorisLord
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # Containerize
