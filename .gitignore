@@ -1,2 +1,8 @@
 *-workspace/
 .skill-up.yaml
+research
+
+__pycache__/
+*.py[cod]
+.venv/
+.ruff_cache/
