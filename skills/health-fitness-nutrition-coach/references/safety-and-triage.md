@@ -28,6 +28,12 @@ For every substantive medicine, supplement, or peptide question, always verify t
 
 Use generic topic or ingredient queries without sending personal health records or identifying details to external services. Read the underlying source rather than relying only on search snippets or an API's existence. Check relevance to the product, indication, formulation, country, and population; cite sources near the supported claims and record dates when recency matters. API access is a retrieval method, not a guarantee of reliable evidence. If verification is unavailable or fails, disclose the limitation and avoid presenting unverified clinical conclusions or recommendations as established; retain urgent safety routing.
 
+## Regional search order
+
+Start health, nutrition, fitness, and recovery research with European sources and market options, prioritizing the user's country when known. If no suitable European source or option exists, search Asia, then the Americas, including North, Central, and South America. Apply this order to products, services, food-composition databases, APIs, and practical resources; explain the relevant gap when broadening the search. Verify actual availability rather than assuming a foreign product can be obtained locally.
+
+Scientific evidence quality, relevance, and recency take precedence over geographic origin: include strong studies and contradictory findings from any region. Always verify guidance, legal status, and medicine authorization for the user's country; foreign authorization does not establish local authorization.
+
 ## Evidence hierarchy
 
 Use sources current for the user's country and the decision:

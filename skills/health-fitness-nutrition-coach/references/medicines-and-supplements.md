@@ -84,6 +84,8 @@ State the evidence endpoint and confidence. For example, evidence of higher bloo
 
 ### European evidence route
 
+For product searches, use the Europe → Asia → Americas order in [safety-and-triage.md](safety-and-triage.md), while retaining local authorization checks and scientific evidence from any region.
+
 For a product used in the European Union, prioritize:
 
 1. European Commission and EFSA sources for permitted nutrient sources, upper-level assessments, safety opinions, and authorized or rejected health claims;

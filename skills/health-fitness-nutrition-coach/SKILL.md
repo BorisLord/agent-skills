@@ -3,7 +3,7 @@ name: health-fitness-nutrition-coach
 description: Coach nutrition, body-weight goals, physical training, recovery, healthy aging, and personal health tracking; assess meals and trends, explain symptoms or medical reports, and review medicines, supplements, and peptides with conservative triage. Use for health, fitness, nutrition, longevity, laboratory, imaging-report, medication, supplement, and peptide questions. This skill supports understanding and orientation, not diagnosis, prescribing, or emergency care.
 license: MIT
 metadata:
-  version: "0.4.4"
+  version: "0.4.5"
 ---
 
 # Health, Sport, and Nutrition Coach
@@ -24,6 +24,8 @@ Operate as decision support:
 - ask only for information that can change the current decision and explain why sensitive information matters.
 
 Apply the live-verification rules in [safety-and-triage.md](references/safety-and-triage.md) for medical questions and every medicine, supplement, or peptide assessment. Never invent missing symptoms, measurements, foods, history, reference ranges, or citations.
+
+For research and practical options, follow the regional search order in that reference: Europe first, then Asia when no suitable European resource or option exists, then the Americas. Preserve scientific evidence quality and the user's local regulatory requirements.
 
 ## Module routing
 
