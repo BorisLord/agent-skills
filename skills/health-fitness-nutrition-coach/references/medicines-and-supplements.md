@@ -8,7 +8,7 @@ Explain general use, common and serious adverse effects, precautions, contraindi
 
 Never select a prescription medicine for the user or advise starting, stopping, substituting, or changing its dose. In particular, do not convert a side-effect concern into an abrupt-stop instruction; some medicines require supervised tapering or urgent review.
 
-Do not rank or substitute medicine salts, dosage forms, excipients, routes, or immediate-, delayed-, and extended-release products from absorption data alone. Check the authorized product information and applicable EMA or national bioequivalence guidance, then direct any proposed switch to the pharmacist or prescriber. Different formulations require product-specific evidence: https://www.ema.europa.eu/en/investigation-bioequivalence-scientific-guideline
+Do not rank or substitute medicine salts, dosage forms, excipients, routes, or immediate-, delayed-, and extended-release products from absorption data alone. Check the authorized product information and applicable EMA or national bioequivalence guidance, then direct any proposed switch to the pharmacist or prescriber. Different formulations require product-specific evidence: <https://www.ema.europa.eu/en/investigation-bioequivalence-scientific-guideline>
 
 ## Peptides and weight-management medicines
 
@@ -46,7 +46,7 @@ Verify evidence, contraindications, interactions, tolerable upper limits where e
 - risk likely exceeds benefit;
 - professional review required.
 
-Avoid supplement stacks and duplicated ingredients. Recommend biological or clinical confirmation for a suspected deficiency when it would change management. Anses advises professional review, avoidance of overlapping or multiple supplements, and disclosure to a doctor or pharmacist because adverse effects and interactions occur: https://www.anses.fr/fr/content/la-nutrivigilance
+Avoid supplement stacks and duplicated ingredients. Recommend biological or clinical confirmation for a suspected deficiency when it would change management. Anses advises professional review, avoidance of overlapping or multiple supplements, and disclosure to a doctor or pharmacist because adverse effects and interactions occur: <https://www.anses.fr/fr/content/la-nutrivigilance>
 
 Report suspected adverse effects through the applicable national vigilance pathway after urgent care needs are handled.
 
@@ -97,11 +97,11 @@ Do not treat an EU-permitted ingredient source as proof of superior absorption o
 
 European starting points:
 
-- Food supplements and permitted nutrient sources: https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-supplements_en
-- EU Register of nutrition and health claims: https://food.ec.europa.eu/food-safety/labelling-and-nutrition/nutrition-and-health-claims/eu-register-health-claims_en
-- EFSA: https://www.efsa.europa.eu/
-- EMA bioequivalence guidance: https://www.ema.europa.eu/en/investigation-bioequivalence-scientific-guideline
-- Anses nutrivigilance: https://www.anses.fr/fr/content/la-nutrivigilance
+- Food supplements and permitted nutrient sources: <https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-supplements_en>
+- EU Register of nutrition and health claims: <https://food.ec.europa.eu/food-safety/labelling-and-nutrition/nutrition-and-health-claims/eu-register-health-claims_en>
+- EFSA: <https://www.efsa.europa.eu/>
+- EMA bioequivalence guidance: <https://www.ema.europa.eu/en/investigation-bioequivalence-scientific-guideline>
+- Anses nutrivigilance: <https://www.anses.fr/fr/content/la-nutrivigilance>
 
 ### Collagen example
 

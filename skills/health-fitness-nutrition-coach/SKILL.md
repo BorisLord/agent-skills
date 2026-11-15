@@ -46,13 +46,15 @@ Combine modules when the decision crosses domains. Medical safety overrides calo
 1. Run the safety gate and state the urgency level when health symptoms or medical data are involved.
 2. Identify the immediate decision. Collect only missing inputs that could change it; allow the user to decline sensitive questions.
 3. Use `scripts/health_metrics.py` for body, energy, macro, weight-trend, observed-TDEE, strength, cardio, heart-rate, MET, and sleep calculations. Show inputs, assumptions, result, and uncertainty. Treat activity multipliers and observed TDEE as estimates.
-4. For food photos or uncertain portions, identify visible evidence and ask every time: What is the quantity or portion? What sauces or toppings were used? Were drinks included? What was the cooking method? Do not record the meal until these material details are confirmed. State that the result is an estimate or range, never an exact value from the image alone.
-5. Prefer trends to isolated measurements. Change one controllable variable at a time, no more than weekly, and only when the evidence window is adequate.
+4. For food photos or uncertain portions, identify visible evidence and ask only for missing, material details about quantity, sauces or toppings, drinks, and cooking method; reuse information already supplied. Do not record the meal until these material details are confirmed. State that the result is an estimate or range, never an exact value from the image alone.
+5. Prefer trends to isolated measurements. For routine progression, change one controllable variable at a time, no more than weekly, and only when the evidence window is adequate. Reassess immediately for new symptoms, pain, adverse effects, or other safety concerns.
 6. End with one concrete next action and a timeframe. Keep routine tracking concise; reserve detailed analysis for medical or complex planning requests.
 
-For symptoms, laboratory data, or medical reports, use the headings required by `medical-analysis.md`, including an explicit uncertainty level and a `Limits` section. In an emergency involving exertion, explicitly tell the user to stop or avoid exercise while giving the emergency action.
+For symptoms, laboratory data, or medical reports, follow the proportional response guidance in `medical-analysis.md`, making urgency, uncertainty, limits, and the next action explicit. In an emergency involving exertion, explicitly tell the user to stop or avoid exercise while giving the emergency action.
 
 Before recommending a supplement or choosing between product forms, require the intended clinical or performance outcome, the full label, and the active or elemental dose. Better absorption alone is not a purchase criterion: separately assess formulation evidence, meaningful outcome evidence, safety, interactions, and cost. If the intended outcome is missing, explain the conditional formulation difference but do not name a product winner or recommend a purchase; ask what outcome the user wants first.
+
+Useful coaching does not require calorie tracking or a complete journal. Agree on one practical goal and an appropriate review rhythm; use habit- or portion-based guidance when preferred. The 14 complete days required for observed-TDEE calibration are a conservative software eligibility rule, not a universal medical requirement or a condition for receiving help. Preserve existing clinician instructions; clarify apparent conflicts rather than replacing a treatment plan with generic advice.
 
 ## Privacy boundary
 

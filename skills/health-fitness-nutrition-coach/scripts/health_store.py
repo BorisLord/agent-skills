@@ -5,12 +5,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 import tempfile
 import uuid
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import cast
+
+if bool(__package__):
+    from .health_events import replay
+else:
+    from health_events import replay
 
 SCHEMA_VERSION = 1
 EVENT_TYPES = {
@@ -25,6 +31,7 @@ EVENT_TYPES = {
     "supplement",
     "note",
     "correction",
+    "intake_day",
 }
 UNCERTAINTY_LEVELS = {"low", "medium", "high"}
 
@@ -34,7 +41,11 @@ def default_data_dir() -> Path:
 
 
 def resolve_data_dir(value: str | None) -> Path:
-    return Path(value).expanduser().resolve() if value else default_data_dir().resolve()
+    return (
+        Path(value).expanduser().resolve()
+        if value is not None
+        else default_data_dir().resolve()
+    )
 
 
 def initial_profile() -> dict[str, object]:
@@ -52,21 +63,69 @@ def initial_profile() -> dict[str, object]:
     }
 
 
+def protect_storage(data_dir: Path) -> None:
+    resolved = data_dir.resolve()
+    parent = resolved
+    while not parent.exists():
+        parent = parent.parent
+    if any((directory / ".git").exists() for directory in (parent, *parent.parents)):
+        result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(parent),
+                "ls-files",
+                "--",
+                str(resolved / "profile.json"),
+                str(resolved / "events.jsonl"),
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        if result.stdout.strip():
+            raise ValueError(
+                "health records are tracked or staged in Git; remove them from tracking manually before writing (existing history is not erased)"
+            )
+    if resolved.exists():
+        ignore = resolved / ".gitignore"
+        current = ignore.read_text(encoding="utf-8") if ignore.exists() else ""
+        rules = "/profile.json\n/events.jsonl\n"
+        if not current.endswith(rules):
+            ignore.write_text(
+                current
+                + ("\n" if current and not current.endswith("\n") else "")
+                + rules,
+                encoding="utf-8",
+            )
+
+
 def write_json_atomic(path: Path, value: object) -> None:
+    serialized = json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
+    protect_storage(path.parent)
     with tempfile.NamedTemporaryFile(
         "w", encoding="utf-8", dir=path.parent, delete=False
     ) as handle:
-        json.dump(value, handle, ensure_ascii=False, indent=2)
-        handle.write("\n")
         temporary_path = Path(handle.name)
-    temporary_path.chmod(0o600)
-    temporary_path.replace(path)
+        try:
+            handle.write(serialized)
+            handle.flush()
+            temporary_path.chmod(0o600)
+            temporary_path.replace(path)
+        finally:
+            temporary_path.unlink(missing_ok=True)
 
 
 def initialize(data_dir: Path) -> dict[str, object]:
+    protect_storage(data_dir)
     data_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
     data_dir.chmod(0o700)
     created: list[str] = []
+    ignore_path = data_dir / ".gitignore"
+    if not ignore_path.exists():
+        ignore_path.write_text("*\n!.gitignore\n", encoding="utf-8")
+        created.append(ignore_path.name)
+    protect_storage(data_dir)
 
     profile_path = data_dir / "profile.json"
     if not profile_path.exists():
@@ -77,11 +136,6 @@ def initialize(data_dir: Path) -> dict[str, object]:
     if not events_path.exists():
         events_path.touch(mode=0o600)
         created.append(events_path.name)
-
-    ignore_path = data_dir / ".gitignore"
-    if not ignore_path.exists():
-        ignore_path.write_text("*\n!.gitignore\n", encoding="utf-8")
-        created.append(ignore_path.name)
 
     return {"data_dir": str(data_dir), "created": created, "existing": not created}
 
@@ -155,7 +209,7 @@ def load_events(data_dir: Path) -> list[dict[str, object]]:
 
 
 def normalize_event(
-    raw: dict[str, object], existing_ids: set[str]
+    raw: dict[str, object], existing_events: list[dict[str, object]]
 ) -> dict[str, object]:
     event_type = raw.get("type")
     if event_type not in EVENT_TYPES:
@@ -173,14 +227,7 @@ def normalize_event(
     if uncertainty not in UNCERTAINTY_LEVELS:
         raise ValueError("uncertainty must be low, medium, or high")
 
-    if event_type == "correction":
-        corrects_id = event_data.get("corrects_id")
-        if corrects_id not in existing_ids:
-            raise ValueError(
-                "correction data.corrects_id must reference an existing event"
-            )
-        if not isinstance(event_data.get("replacement"), dict):
-            raise ValueError("correction data.replacement must be a JSON object")
+    replay([*existing_events, raw])
 
     return {
         "schema_version": SCHEMA_VERSION,
@@ -196,10 +243,14 @@ def normalize_event(
 
 def append_event(data_dir: Path, raw: dict[str, object]) -> dict[str, object]:
     events = load_events(data_dir)
-    event = normalize_event(raw, {str(item.get("id")) for item in events})
+    event = normalize_event(raw, events)
+    serialized = (
+        json.dumps(event, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+        + "\n"
+    )
+    protect_storage(data_dir)
     with (data_dir / "events.jsonl").open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(event, ensure_ascii=False, separators=(",", ":")))
-        handle.write("\n")
+        handle.write(serialized)
     return event
 
 
@@ -211,7 +262,7 @@ def filter_events(
 ) -> list[dict[str, object]]:
     selected: list[dict[str, object]] = []
     for event in events:
-        if event_type and event.get("type") != event_type:
+        if event_type is not None and event.get("type") != event_type:
             continue
         day = parse_iso_date(str(event.get("effective_at")))
         if since and day < since:
@@ -268,10 +319,11 @@ def main() -> None:
             result = filter_events(
                 load_events(data_dir), args.type, args.since, args.until
             )
-    except (TypeError, ValueError, OSError, json.JSONDecodeError) as error:
+        serialized = json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False)
+    except (TypeError, ValueError, OSError, subprocess.CalledProcessError) as error:
         raise SystemExit(f"error: {error}") from error
 
-    json.dump(result, sys.stdout, ensure_ascii=False, indent=2)
+    sys.stdout.write(serialized)
     sys.stdout.write("\n")
 
 

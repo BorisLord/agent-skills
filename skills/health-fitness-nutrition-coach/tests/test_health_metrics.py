@@ -90,6 +90,11 @@ class HealthMetricsTests(unittest.TestCase):
                         "data": {"weight_kg": 80 - index * 0.05},
                     },
                     {"type": "meal", "effective_at": day, "data": {"kcal": 2000}},
+                    {
+                        "type": "intake_day",
+                        "effective_at": day,
+                        "data": {"complete": True},
+                    },
                 ]
             )
         previous_stdin = sys.stdin

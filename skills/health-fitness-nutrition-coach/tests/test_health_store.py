@@ -32,7 +32,7 @@ class HealthStoreTests(unittest.TestCase):
             self.assertTrue(second["existing"])
             self.assertEqual(
                 (data_dir / ".gitignore").read_text(encoding="utf-8"),
-                "*\n!.gitignore\n",
+                "*\n!.gitignore\n/profile.json\n/events.jsonl\n",
             )
 
     def test_profile_update_deep_merges(self) -> None:
@@ -97,14 +97,14 @@ class HealthStoreTests(unittest.TestCase):
         self.assertEqual(filtered, [{"type": "weight", "effective_at": "2026-09-03"}])
 
     def test_invalid_correction_fails(self) -> None:
-        with self.assertRaisesRegex(ValueError, "existing event"):
+        with self.assertRaisesRegex(ValueError, "existing original event"):
             health_store.normalize_event(
                 {
                     "type": "correction",
                     "effective_at": "2026-09-01",
                     "data": {"corrects_id": "missing", "replacement": {}},
                 },
-                set(),
+                [],
             )
 
 

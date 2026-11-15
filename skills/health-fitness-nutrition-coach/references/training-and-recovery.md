@@ -16,7 +16,7 @@ Use `scripts/health_metrics.py` for deterministic calculations:
 - `activity-energy` when the MET value is supplied, preserving high uncertainty;
 - `sleep` for sleep efficiency without diagnostic classification.
 
-Use current official population guidance as a health baseline, then adapt to the user's training goal. French adult guidance currently uses progressive daily activity plus regular strength, mobility, and balance work; verify the live guidance before quoting exact targets: https://www.mangerbouger.fr/bouger-plus/a-tout-age-et-a-chaque-etape-de-la-vie/les-recommandations-pour-les-adultes/augmenter-l-activite-physique
+Use current official population guidance as a health baseline, then adapt to the user's training goal. French adult guidance currently uses progressive daily activity plus regular strength, mobility, and balance work; verify the live guidance before quoting exact targets: <https://www.mangerbouger.fr/bouger-plus/a-tout-age-et-a-chaque-etape-de-la-vie/les-recommandations-pour-les-adultes/augmenter-l-activite-physique>
 
 For long-term health, a short, modest, safe session is preferable to inactivity when no medical restriction applies. Reward consistency over an ideal program; scale duration and intensity to current capacity while preserving safe technique. "Some activity is better than none" never overrides injury or emergency stop criteria. For longevity goals, combine this module with [healthy-aging.md](healthy-aging.md).
 

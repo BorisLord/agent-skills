@@ -13,6 +13,11 @@ from pathlib import Path
 from statistics import fmean
 from typing import cast
 
+if bool(__package__):
+    from .health_events import number, replay
+else:
+    from health_events import number, replay
+
 KCAL_PER_KG_WEIGHT_CHANGE = 7700
 
 
@@ -98,7 +103,7 @@ def parse_weight_observations(raw: object) -> list[tuple[date, float]]:
         if "date" not in observation or "weight_kg" not in observation:
             raise ValueError("each observation needs date and weight_kg")
         day = date.fromisoformat(str(observation["date"]))
-        weight = float(cast(int | float | str, observation["weight_kg"]))
+        weight = number(observation["weight_kg"], "weight_kg", positive=True)
         if weight <= 0:
             raise ValueError("weight_kg must be positive")
         by_day[day].append(weight)
@@ -167,7 +172,7 @@ def parse_effective_date(value: object) -> date:
 
 
 def read_events(data_dir: str | None) -> list[dict[str, object]]:
-    if data_dir:
+    if data_dir is not None:
         path = Path(data_dir).expanduser().resolve() / "events.jsonl"
         if not path.exists():
             raise ValueError(f"event log not found: {path}")
@@ -185,35 +190,15 @@ def read_events(data_dir: str | None) -> list[dict[str, object]]:
         if not isinstance(item, dict):
             raise ValueError("events must contain JSON objects")
         events.append(cast(dict[str, object], item))
-    return apply_corrections(events)
+    return events
 
 
 def apply_corrections(events: list[dict[str, object]]) -> list[dict[str, object]]:
-    effective: list[dict[str, object]] = []
-    positions: dict[str, int] = {}
-    for event in events:
-        if event.get("type") == "correction":
-            data = event.get("data")
-            if not isinstance(data, dict):
-                continue
-            correction = cast(dict[str, object], data)
-            target_id = str(correction.get("corrects_id", ""))
-            replacement = correction.get("replacement")
-            if target_id not in positions or not isinstance(replacement, dict):
-                continue
-            target = effective[positions[target_id]].copy()
-            target["data"] = cast(dict[str, object], replacement)
-            effective[positions[target_id]] = target
-            continue
-        effective.append(event)
-        event_id = event.get("id")
-        if event_id is not None:
-            positions[str(event_id)] = len(effective) - 1
-    return effective
+    return replay(events)[0]
 
 
 def observed_tdee(args: argparse.Namespace) -> dict[str, object]:
-    events = read_events(args.data_dir)
+    events, complete = replay(read_events(args.data_dir))
     weights: dict[date, list[float]] = defaultdict(list)
     intake: dict[date, float] = defaultdict(float)
     for event in events:
@@ -224,14 +209,25 @@ def observed_tdee(args: argparse.Namespace) -> dict[str, object]:
         event_data = cast(dict[str, object], data)
         day = parse_effective_date(event["effective_at"])
         if event_type == "weight" and "weight_kg" in event_data:
-            weights[day].append(float(cast(int | float | str, event_data["weight_kg"])))
+            weights[day].append(
+                number(event_data["weight_kg"], "weight_kg", positive=True)
+            )
         elif event_type == "meal" and "kcal" in event_data:
-            intake[day] += float(cast(int | float | str, event_data["kcal"]))
+            intake[day] += number(event_data["kcal"], "kcal")
     observations = sorted((day, fmean(values)) for day, values in weights.items())
     if not observations:
         raise ValueError("observed TDEE requires weight events")
-    first_day, last_day = observations[0][0], observations[-1][0]
-    span = (last_day - first_day).days + 1
+    last_day = observations[-1][0]
+    first_day = last_day - timedelta(days=13)
+    span = 14
+    observations = [(day, weight) for day, weight in observations if day >= first_day]
+    days = [first_day + timedelta(days=index) for index in range(14)]
+    missing = [day.isoformat() for day in days if day not in complete]
+    if missing:
+        raise ValueError(
+            "observed TDEE requires at least 14 complete calendar days; missing confirmations: "
+            + ", ".join(missing)
+        )
     first_values = [
         (day, weight)
         for day, weight in observations
@@ -242,18 +238,11 @@ def observed_tdee(args: argparse.Namespace) -> dict[str, object]:
         for day, weight in observations
         if day >= last_day - timedelta(days=6)
     ]
-    intake_values = [
-        value for day, value in intake.items() if first_day <= day <= last_day
-    ]
-    if (
-        span < 14
-        or len(intake_values) < 10
-        or len(first_values) < 4
-        or len(last_values) < 4
-    ):
+    logged_days = sum(day in intake for day in days)
+    intake_values = [intake.get(day, 0.0) for day in days]
+    if len(first_values) < 4 or len(last_values) < 4:
         raise ValueError(
-            "observed TDEE requires at least 14 calendar days, 10 intake days, "
-            "and 4 weight observations in both the first and last 7-day windows"
+            "observed TDEE requires 4 weight observations in both 7-day windows"
         )
     first_weight = fmean(weight for _day, weight in first_values)
     last_weight = fmean(weight for _day, weight in last_values)
@@ -268,8 +257,11 @@ def observed_tdee(args: argparse.Namespace) -> dict[str, object]:
     return {
         "method": "energy-balance estimate from logged intake and smoothed weight change",
         "calendar_span_days": span,
-        "intake_logged_days": len(intake_values),
-        "intake_coverage_percent": round(len(intake_values) / span * 100, 1),
+        "window_start": first_day.isoformat(),
+        "window_end": last_day.isoformat(),
+        "intake_confirmed_days": len(days),
+        "intake_logged_days": logged_days,
+        "intake_confirmed_coverage_percent": 100.0,
         "first_window_weight_observations": len(first_values),
         "last_window_weight_observations": len(last_values),
         "first_7_day_average_kg": round(first_weight, 3),
@@ -534,9 +526,10 @@ def main() -> None:
     args = build_parser().parse_args()
     try:
         result = args.handler(args)
-    except (ValueError, OSError, KeyError, json.JSONDecodeError) as error:
+        serialized = json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False)
+    except (TypeError, ValueError, OverflowError, OSError, KeyError) as error:
         raise SystemExit(f"error: {error}") from error
-    json.dump(result, sys.stdout, ensure_ascii=False, indent=2)
+    sys.stdout.write(serialized)
     sys.stdout.write("\n")
 
 

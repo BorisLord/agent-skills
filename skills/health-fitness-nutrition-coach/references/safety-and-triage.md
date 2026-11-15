@@ -46,11 +46,11 @@ For European products and claims, prefer the European Commission, EFSA, and EMA,
 
 Useful official starting points:
 
-- French adult nutrition and activity guidance: https://www.mangerbouger.fr/ressources-pros/elaboration-des-recommandations-nutritionnelles/les-recommandations-adultes-alimentation-activite-physique-et-sedentarite
-- French public medicine database: https://base-donnees-publique.medicaments.gouv.fr/
-- Anses nutrivigilance: https://www.anses.fr/fr/content/la-nutrivigilance
-- French suicide prevention line: https://sante.gouv.fr/prevention-en-sante/sante-mentale/promotion-et-prevention/la-prevention-du-suicide/article/le-numero-national-de-prevention-du-suicide
-- Example of official emergency orientation for chest pain: https://www.ameli.fr/assure/sante/themes/infarctus-myocarde/reconnaitre-infarctus-agir
+- French adult nutrition and activity guidance: <https://www.mangerbouger.fr/ressources-pros/elaboration-des-recommandations-nutritionnelles/les-recommandations-adultes-alimentation-activite-physique-et-sedentarite>
+- French public medicine database: <https://base-donnees-publique.medicaments.gouv.fr/>
+- Anses nutrivigilance: <https://www.anses.fr/fr/content/la-nutrivigilance>
+- French suicide prevention line: <https://sante.gouv.fr/prevention-en-sante/sante-mentale/promotion-et-prevention/la-prevention-du-suicide/article/le-numero-national-de-prevention-du-suicide>
+- Example of official emergency orientation for chest pain: <https://www.ameli.fr/assure/sante/themes/infarctus-myocarde/reconnaitre-infarctus-agir>
 
 State what the evidence supports, what is inferred, and what remains unresolved. Never fabricate a source or imply that a citation validates a user-specific diagnosis.
 

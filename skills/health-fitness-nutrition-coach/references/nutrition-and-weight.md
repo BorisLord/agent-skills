@@ -2,16 +2,16 @@
 
 ## Energy estimate
 
-For adults, use `scripts/health_metrics.py energy` to calculate Mifflin-St Jeor resting energy expenditure and an activity-multiplier estimate of total daily expenditure. The formula requires a male or female constant; describe this as a formula input, use only the value the user chooses for that calculation, and do not infer it from name or appearance. Cite the original equation when needed: https://pubmed.ncbi.nlm.nih.gov/2305711/
+For adults, use `scripts/health_metrics.py energy` to calculate Mifflin-St Jeor resting energy expenditure and an activity-multiplier estimate of total daily expenditure. The formula requires a male or female constant; describe this as a formula input, use only the value the user chooses for that calculation, and do not infer it from name or appearance. Cite the original equation when needed: <https://pubmed.ncbi.nlm.nih.gov/2305711/>
 
 Use the other deterministic commands when applicable:
 
 - `body` for BMI, waist-to-height ratio, and weight change without diagnostic classification;
 - `macros` with guideline-backed or user-agreed protein and fat coefficients;
 - `trend` for 7-day moving averages and adjacent weekly change;
-- `observed-tdee --data-dir PATH` only when the command accepts data coverage: at least 14 days, 10 intake days, and four weights in both boundary windows.
+- `observed-tdee --data-dir PATH` only after all 14 calendar days ending on the latest weight observation have explicitly confirmed complete intake, with at least four distinct weighing days in each seven-day half.
 
-The observed-TDEE calculation uses 7700 kcal/kg as an explicit approximation. Report intake coverage and limitations, and never change the calorie target automatically from its result.
+The observed-TDEE calculation uses 7700 kcal/kg as an explicit approximation. Report the calculation window, confirmed-day count, and limitations, and never change the calorie target automatically from its result. Missing confirmations prevent this calibration only: continue useful qualitative coaching or an appropriate, clearly labelled formula-based estimate. This eligibility rule is a software safeguard, not a clinical standard.
 
 Show:
 
@@ -90,4 +90,4 @@ For weight management, fasting is optional, not inherently superior or necessari
 
 Use `scripts/health_metrics.py trend` for 7-day moving averages and adjacent weekly comparisons. Interpret scale changes alongside water, salt, glycogen, digestion, menstrual cycle, training load, sleep, illness, energy, hunger, mood, and performance.
 
-Reassess no more than weekly. Change a target in a small step only when the 14-day evidence is adequate and adherence or measurement uncertainty does not better explain the result. Report the observation, competing explanations, confidence, adjustment, and review date.
+Review routine calorie-target changes no more than weekly; new symptoms, pain, adverse effects, or safety concerns require immediate reassessment. Change a target in a small step only when the 14-day evidence is adequate and adherence or measurement uncertainty does not better explain the result. Report the observation, competing explanations, confidence, adjustment, and review date.
