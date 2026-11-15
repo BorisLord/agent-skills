@@ -1,2 +1,32 @@
 [tools]
-"github:alibaba/skill-up" = "0.12.0"
+"github:alibaba/skill-up" = "0.15.0"
+python = "3.13.18"
+uv = "0.13.7"
+"aqua:rvben/rumdl" = "0.3.4"
+
+[tasks.setup]
+run = "uv sync --locked"
+
+[tasks."fmt-check:python"]
+run = "uv run --locked ruff format --check skills/health-fitness-nutrition-coach"
+
+[tasks."lint:python"]
+run = "uv run --locked ruff check skills/health-fitness-nutrition-coach"
+
+[tasks."typecheck:python"]
+run = "uv run --locked ty check"
+
+[tasks."test:python"]
+run = "uv run --locked python -m unittest discover -s skills/health-fitness-nutrition-coach/tests -t skills/health-fitness-nutrition-coach -v"
+
+[tasks.check]
+depends = ["fmt-check:python", "lint:python", "typecheck:python", "test:python", "lint:markdown", "fmt-check:markdown"]
+
+[tasks."lint:markdown"]
+run = "rumdl check ."
+
+[tasks."fmt-check:markdown"]
+run = "rumdl fmt --check ."
+
+[tasks."fmt:markdown"]
+run = "rumdl fmt ."
