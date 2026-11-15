@@ -5,9 +5,11 @@ description: Keeps standalone sbx product workflows outside generic container en
 input:
   prompt: |
     I invoked containerize, but my task is about Docker Sandboxes. Map these
-    four requests to the owning official Docker skills: create and reattach a
+    requests to the owning official Docker skills or current official docs: create and reattach a
     standalone `sbx` sandbox; configure its network policy and credentials;
-    author an `sbxenv.yaml`; and publish an `sbx kit` with `spec.yaml`.
+    author an `sbxenv.yaml`; publish a v3 kit; and handle a legacy v2 `spec.yaml`.
+    Do not invent a skill for environment authoring. Distinguish the kits skill
+    scope from legacy v2 support.
     Give routing only, without creating project files or running commands.
 
 judge:
@@ -17,5 +19,9 @@ judge:
         all:
           - "docker-sandboxes-lifecycle"
           - "docker-sandboxes-network-credentials"
-          - "docker-sandboxes-env"
           - "docker-sandboxes-kits"
+    - output_matches:
+        all:
+          - "(?i)(documentation|docs)"
+          - "(?i)v3"
+          - "(?i)(legacy|v2)"

@@ -17,7 +17,9 @@ Use this module whenever authoring, migrating, deploying, or auditing a Compose 
 - Treat `depends_on` as startup ordering, not durable readiness. Swarm stacks do not provide the Compose dependency contract; services must tolerate dependency startup and restart through bounded retries and readiness.
 - Verify support for `security_opt`, capability controls, read-only roots, temporary filesystems, devices, sysctls, resource limits, restart policies, secrets, configs, healthchecks, and update/rollback settings with the exact consumer.
 - Compose implementations may honor parts of `deploy`, while `docker stack deploy` uses its own supported Compose model. Never use one renderer as proof for the other.
+- Automatic `.env` interpolation is a Compose CLI feature, not a `docker stack deploy` feature. Distinguish interpolation inputs from container `env_file` values; supply stack interpolation through the explicit deployment environment and validate with that same environment without exposing secrets.
 - Use Compose secrets only after verifying their implementation and host-file exposure. Swarm secrets are encrypted in transit and at rest in the Raft log and mounted only into assigned tasks, but application handling still matters.
+- Swarm secrets are immutable: use versioned secret objects with stable application target paths and coordinate backing-service credential rotation. Preserve the references and still-valid credentials needed by [release rollback](release-and-deployment.md#rolling-updates-and-migrations).
 - Use explicit external network names for shared resources. Account for stack prefixing of non-external networks and volumes.
 
 ## Swarm availability and updates
@@ -39,8 +41,8 @@ For every deployment profile:
 2. inspect image digest, command, user, mounts, secrets/configs, networks, endpoint ports, privileges, capabilities, read-only state, limits, restart, health, and update/rollback policy;
 3. test startup from an empty host or node, dependency delay, dependency restart, normal termination, application failure, and failed rollout;
 4. verify allowed network paths and denied cross-stack/backend paths;
-5. issue application requests through the real ingress and directly confirm that no unintended host port bypass exists;
-6. retain the prior digest and a tested rollback command until the rollout is accepted.
+5. issue application requests through the real ingress and confirm that no unintended host port bypass exists, including routing-mesh exposure on nodes without tasks as described in [network validation](traefik-and-network-security.md#network-topology);
+6. retain the prior digest, required rollback dependencies, and a tested rollback command until the rollout is accepted.
 
 ## Canonical references
 
@@ -51,3 +53,4 @@ For every deployment profile:
 - [Docker Swarm services](https://docs.docker.com/engine/swarm/services/)
 - [Docker Swarm secrets](https://docs.docker.com/engine/swarm/secrets/)
 - [Docker overlay networks](https://docs.docker.com/engine/network/drivers/overlay/)
+- [Compose variable interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/)

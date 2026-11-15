@@ -1,5 +1,11 @@
 # Builds, context, and cache
 
+## Builder and output contract
+
+- Inspect the selected builder, driver, image store, target platforms, and output destination. Choose explicit load, push, or filesystem output supported by the intended consumer; a successful build can leave its result only in builder cache.
+- Record the build-result identity and verify that runtime checks consume that output rather than a pre-existing local tag. Distinguish a local image/config ID from registry manifest and multi-platform index digests; verify the tested platform image belongs to the produced result instead of comparing unlike identifiers.
+- When attestations are required, select a driver/store/exporter that preserves them and inspect the actual output for their presence and association with the produced subject. The classic Docker image store cannot retain attestations; supported registry outputs preserve them, while local/tar exporters emit attestation JSON files. Check the consumer's support rather than assuming every load or export preserves metadata.
+
 ## Layer and cache strategy
 
 Order stable inputs before volatile inputs:
@@ -82,6 +88,7 @@ When byte-for-byte reproducibility matters, also control package snapshots, tool
 ## Canonical references
 
 - [Docker cache optimization](https://docs.docker.com/build/cache/optimize/)
+- [Docker build drivers and output loading](https://docs.docker.com/build/builders/drivers/)
 - [Docker build contexts and Dockerfile-specific ignore files](https://docs.docker.com/build/concepts/context/)
 - [Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
 - [Docker local and tar exporters](https://docs.docker.com/build/exporters/local-tar/)

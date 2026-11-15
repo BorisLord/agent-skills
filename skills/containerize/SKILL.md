@@ -4,7 +4,7 @@ description: Build, review, harden, or debug OCI application images, Dev Contain
 license: MIT
 metadata:
   author: BorisLord
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # Containerize
@@ -27,7 +27,7 @@ Load only the applicable modules; combine them when a task crosses boundaries:
 - [builds-and-cache.md](references/builds-and-cache.md) for Containerfile construction, monorepos, contexts, reproducibility, and exported software artifacts;
 - [dev-containers.md](references/dev-containers.md) for `devcontainer.json`, development stages, editor integration, and reuse of an existing Compose stack;
 - [alternative-builds.md](references/alternative-builds.md) before replacing a Containerfile with Buildpacks, Jib, or another higher-level builder;
-- [runtime-and-orchestration.md](references/runtime-and-orchestration.md) for processes, signals, probes, logs, state, and orchestration boundaries;
+- [runtime-and-orchestration.md](references/runtime-and-orchestration.md) for processes, resource budgets, signals, probes, logs, state, and orchestration boundaries;
 - [compose-and-swarm.md](references/compose-and-swarm.md) for Compose or Docker Swarm authoring, compatibility, updates, and effective-state validation;
 - [traefik-and-network-security.md](references/traefik-and-network-security.md) when Traefik, a shared reverse proxy, multi-stack ingress, or container network isolation is in scope;
 - [docker-engine-security.md](references/docker-engine-security.md) when a Docker daemon, API endpoint, socket mount, authorization proxy, rootless mode, or daemon configuration is in scope;

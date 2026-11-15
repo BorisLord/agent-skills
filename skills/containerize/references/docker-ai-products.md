@@ -8,8 +8,10 @@ Docker Sandboxes and Docker Agent are separate products from OCI application ima
 | --- | --- |
 | Create, reattach to, stop, or remove a standalone `sbx` sandbox; choose workspace isolation | [`docker-sandboxes-lifecycle`](https://github.com/docker/skills/blob/main/skills/docker-sandboxes-lifecycle/SKILL.md) |
 | Configure `sbx` network policy, credentials, or registry access | [`docker-sandboxes-network-credentials`](https://github.com/docker/skills/blob/main/skills/docker-sandboxes-network-credentials/SKILL.md) |
-| Author or run a declarative `sbxenv.yaml` environment | [`docker-sandboxes-env`](https://github.com/docker/skills/blob/main/skills/docker-sandboxes-env/SKILL.md) (experimental) |
-| Author, validate, or distribute an `sbx kit` `spec.yaml` | [`docker-sandboxes-kits`](https://github.com/docker/skills/blob/main/skills/docker-sandboxes-kits/SKILL.md) (experimental) |
+| Author or run a declarative `sbxenv.yaml` environment | Current [official Docker Sandboxes documentation](https://docs.docker.com/ai/sandboxes/); discover the current catalog before naming an owning skill |
+| Author, verify, or distribute a v3 `sbx kit` descriptor | [`docker-sandboxes-kits`](https://github.com/docker/skills/blob/main/skills/docker-sandboxes-kits/SKILL.md) (experimental) |
+
+Legacy v2 `spec.yaml` kits are outside the current `docker-sandboxes-kits` skill. Check the installed version and its matching official documentation; do not claim that the v3 skill authors or debugs v2 kits, or silently migrate them.
 
 ## Docker Agent
 

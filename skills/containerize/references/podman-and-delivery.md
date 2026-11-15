@@ -22,14 +22,15 @@
 - Use a Podman pod only when shared network/lifecycle semantics are intentional; do not use pods to hide independently scalable services.
 - Use Quadlet for declarative long-lived Podman containers, pods, networks, volumes, images, or builds managed by systemd on Linux.
 - Prefer Quadlet over generated systemd units. Validate generated units and startup ordering with the installed Podman/systemd versions.
+- Quadlet requires cgroup v2. For rootless services, use a supported user search path such as `~/.config/containers/systemd/`, the user manager, and a Quadlet `[Install]` section such as `WantedBy=default.target`. Generated services are not enabled conventionally; system-unit `[Service] User=` does not create a rootless Quadlet service.
+- Validate with the installed Quadlet generator's `--user --dryrun` mode for rootless units, using `QUADLET_UNIT_DIRS` to isolate staged files, and supported systemd verification such as `systemd-analyze --user --generators=true verify <name>.service`. Resolve the generator path and flags from the installed version; report unavailable checks.
 - Configure restart, notification, dependencies, timeouts, health, secrets, mounts, auto-update, and user lingering according to the service contract. Do not copy a generic unit unchanged.
 
 ## Buildah cache and secrets
 
 Buildah and Podman share container-image tooling but do not copy BuildKit cache flags mechanically:
 
-- enable intermediate layers when the chosen Buildah workflow requires `--layers`;
-- configure `--cache-from` and `--cache-to` registries explicitly for ephemeral CI;
+- enable `--layers` when using registry caches: Buildah ignores `--cache-from` and `--cache-to` without it; configure those registries explicitly for ephemeral CI;
 - scope remote cache repositories by trust and incompatible platforms;
 - use secret mounts, remembering that secret content changes do not themselves invalidate a cached layer;
 - verify multi-architecture manifest lists and every referenced platform image.

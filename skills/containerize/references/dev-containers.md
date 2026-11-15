@@ -20,9 +20,10 @@ A Dev Container is the environment in which the developer, editor extensions, an
 ## Configuration
 
 - Choose exactly one primary source in `devcontainer.json`: an image, a Containerfile build, or a Compose service. Set the workspace folder and mount deliberately, accounting for volumes that mask files supplied by the image.
-- Match the container user and host UID/GID behavior so the mounted workspace and caches remain writable without defaulting to root. Distinguish `remoteUser`, which controls tool and lifecycle processes, from the service's runtime user.
-- Put stable OS packages and tools in the image or a versioned Feature. Use lifecycle commands only for work that depends on the mounted repository, and ensure creation and start commands terminate.
-- Pin Features through the generated `.devcontainer-lock.json`, define an update policy, and use frozen lockfile validation when reproducibility is required.
+- Match the container user and host UID/GID behavior so the mounted workspace and caches remain writable without defaulting to root. Distinguish `remoteUser`, which controls tool and lifecycle processes inside the container, from the service's runtime user.
+- Put stable OS packages and tools in the image or a versioned Feature. Use in-container lifecycle commands for repository-dependent setup. `initializeCommand` runs on the host, which may be a remote/cloud host: review it before execution, match its host shell, and make repeated execution safe. All hooks must terminate; select `waitFor` explicitly when required setup must finish before development tools connect.
+- Pin Features through the CLI-generated lockfile: `devcontainer-lock.json` beside `devcontainer.json`, or `.devcontainer-lock.json` beside `.devcontainer.json`. Preserve the generated filename, define an update policy, and use frozen lockfile validation when reproducibility is required.
+- Before installing a Feature, review its publisher, root-run installation script, dependencies, and contributed hooks, mounts, and privileges. Inspect the merged configuration and justify added access; pinning identifies content but does not establish that its behavior is acceptable.
 - Treat forwarded ports as developer access and published ports as host exposure. Expose only what the workflow needs.
 - Keep secrets out of images, Features, lifecycle commands, and committed environment files. Treat a mounted engine socket as privileged control of that engine; choose socket access, Docker-outside-of-Docker, or Docker-in-Docker only from the required isolation and workflow.
 - Add only tool-specific editor settings under the appropriate `customizations` key so the portable Dev Container contract remains usable by other supporting tools.
@@ -41,7 +42,12 @@ A Dev Container is the environment in which the developer, editor extensions, an
 
 1. Read the effective configuration with the pinned Dev Container CLI and inspect the selected image or build, Compose files, service, workspace, user, mounts, Features, ports, and lifecycle commands.
 2. Build and start the Dev Container with its real engine. Rebuild after configuration, Containerfile, Compose, or Feature changes.
-3. Execute the repository's setup, build, test, debugger, and hot-reload paths as the configured development user. Verify source and cache ownership from both host and container.
+3. Execute the repository's in-container setup, build, test, debugger, and hot-reload paths as the configured development user. Verify host initialization separately under its actual host identity, and source/cache ownership from both host and container.
 4. Start required sibling services and test their documented names, networks, health, and persistence without depending on production-only ingress.
 5. Test a clean first creation as well as a rebuild with existing volumes and caches; detect stale or masked image content.
 6. If CI uses the Dev Container, run its build and tests through the same pinned CLI and lockfile. Test the final production image separately.
+
+## Canonical references
+
+- [Dev Container lifecycle and user properties](https://github.com/devcontainers/spec/blob/main/docs/specs/devcontainerjson-reference.md)
+- [Dev Container Features](https://github.com/devcontainers/spec/blob/main/docs/specs/devcontainer-features.md)

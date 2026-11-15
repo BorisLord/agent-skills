@@ -20,7 +20,9 @@ The shared ingress network is a reachability boundary, not strong tenant isolati
 - Keep databases, caches, queues, workers, migration jobs, socket proxies, and management services off the shared ingress network unless a demonstrated traffic path requires membership.
 - Publish only host entrypoints that must accept traffic. A service reached through Traefik normally needs an internal listening port, not a host `ports` mapping. `EXPOSE` and Compose `expose` are metadata, not firewall controls.
 - Use a Compose `internal: true` network only when its external isolation matches the workload's required egress. A service that must reach the Internet needs a deliberate egress path; do not weaken every backend network to solve one caller's need.
-- In Swarm, use an overlay ingress network shared by Traefik and routed services. Enable overlay encryption when node-to-node application traffic crosses an untrusted network and accept its measured performance cost. `attachable: true` is needed only when standalone containers must join the overlay.
+- In Swarm, use a dedicated application overlay shared by Traefik and routed services. This is distinct from Swarm's special `ingress` network used by the routing mesh; preserve existing network names while identifying each network's role. Enable overlay encryption when node-to-node application traffic crosses an untrusted network and accept its measured performance cost. The special `ingress` network has its own encryption configuration. `attachable: true` is needed only when standalone containers must join the overlay.
+- Inspect published-port `PublishMode`: routing-mesh publication can accept traffic on every node, including nodes without a local task. Check exposure from outside across relevant node addresses and interfaces; choose host publishing only when placement and port constraints support it.
+- Require trusted-node-only access to Swarm transport: manager TCP 2377, discovery TCP/UDP 7946, and the configured VXLAN data-path port (UDP 4789 by default). VXLAN provides no authentication; keep it unreachable from untrusted networks. Encrypted overlays also require IP protocol 50 (ESP). Report missing host-network controls as prerequisites for the host-hardening owner rather than changing firewalls implicitly.
 - Use stable explicit network names. Account for Compose and Swarm stack-name prefixing when a network is not external.
 
 For each service, record the allowed inbound peers, outbound destinations, DNS needs, and reason for every network membership. The topology is complete when every required flow succeeds and representative forbidden cross-stack and backend flows fail.
@@ -46,6 +48,8 @@ Prefer, in order supported by the deployment:
 3. a direct socket mount only as an explicitly accepted residual risk.
 
 Build proxy policy from the API calls required by the exact Traefik provider and version. Deny by default, allow required discovery and event reads, deny mutation endpoints, bind the proxy only to its private network, and test both allowed reads and rejected writes. Keep the proxy off public and shared application networks.
+
+The Swarm provider needs a manager-backed API endpoint. A local manager socket requires manager placement; an authorized remote manager endpoint permits other placement. Verify actual service and event discovery, not just an ordinary Docker API response.
 
 ## Edge configuration
 
@@ -85,3 +89,5 @@ Do not declare the design secure from manifest inspection alone. Record commands
 - [Docker Compose networks](https://docs.docker.com/reference/compose-file/networks/)
 - [Docker bridge networks](https://docs.docker.com/engine/network/drivers/bridge/)
 - [Docker overlay network encryption](https://docs.docker.com/engine/network/drivers/overlay/)
+- [Docker Swarm routing mesh](https://docs.docker.com/engine/swarm/ingress/)
+- [Docker Swarm transport prerequisites](https://docs.docker.com/engine/swarm/swarm-tutorial/#open-protocols-and-ports-between-the-hosts)

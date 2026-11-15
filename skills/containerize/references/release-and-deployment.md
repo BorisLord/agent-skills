@@ -14,6 +14,8 @@ Prefer this release chain:
 
 Publish human-friendly, commit, release, or environment tags as aliases when useful, but do not use `latest` as the release identity. Pass the built digest between jobs rather than resolving a mutable tag again. If a frontend deliberately embeds environment-specific public values, produce and track distinct immutable digests or redesign runtime configuration; never pretend they are one promotable artifact.
 
+Establish tested output identity and attestation-preserving delivery using the [builder and output contract](builds-and-cache.md#builder-and-output-contract).
+
 For file and package releases, publish final artifacts together with the checksum manifest, signatures, certificates or verification bundles, SBOMs, and provenance required by the consumer. Verify the published copy with public trust material; successful verification inside the producing build does not prove that publication preserved the bytes or sidecars.
 
 ## Configuration phases
@@ -51,7 +53,9 @@ A runtime environment variable cannot change a value already compiled or bundled
 - Reserve temporary capacity for overlapping replicas and account for exclusive host ports, singleton devices, node-local volumes, and leader roles.
 - Keep API, configuration, and database changes backward-compatible for the overlap window, or choose a rollout that prevents mixed versions.
 - Run schema migrations as a coordinated one-shot release step or prove startup migrations are idempotent and concurrency-safe. Do not let every replica race an unsafe migration.
+- Classify database engine/data-format upgrades separately from application schema migrations. Verify the vendor-supported upgrade path, extension and client compatibility, and rehearse on restored data. Retain independently recoverable prior data until acceptance; changing the image tag alone does not upgrade persisted files.
 - Before an authorized destructive state or schema migration, restore the intended backup into a disposable target and verify its schema plus representative application data. A backup artifact that has not passed a restore test is not proven rollback input.
+- Retain rollback-compatible state, configuration, and credentials alongside the prior image. For Swarm, preserve required versioned secret objects/references and coordinate backing-service credential changes; retaining a secret object cannot restore a password already invalidated in that service.
 - Define update monitoring, failure thresholds, rollback behavior, termination grace, and post-deploy verification from observed startup and drain times.
 - Remember that health status, traffic readiness, restart policy, and rollout failure are different platform signals.
 
@@ -59,3 +63,5 @@ A runtime environment variable cannot change a value already compiled or bundled
 
 - [Docker GitHub Actions cache](https://docs.docker.com/build/cache/backends/gha/)
 - [Docker SBOM and provenance attestations](https://docs.docker.com/build/ci/github-actions/attestations/)
+- [PostgreSQL major-version upgrade paths](https://www.postgresql.org/docs/current/upgrading.html)
+- [Swarm secret rotation](https://docs.docker.com/engine/swarm/secrets/#example-rotate-a-secret)

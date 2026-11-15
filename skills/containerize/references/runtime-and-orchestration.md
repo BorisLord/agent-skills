@@ -36,6 +36,13 @@ Use a tiny init (`--init`) only when the main process cannot reap children. Do n
 
 `EXPOSE` documents intended listening ports. It does not publish a port, open a firewall, or enforce security. Add it when the metadata helps users; do not depend on it operationally.
 
+## Resource budgets
+
+- Establish representative concurrency and startup, steady-state, and peak budgets. Inspect effective CPU/memory constraints, swap policy, and process/thread limits under the actual engine and cgroup mode. Runtime soft limits are not guaranteed capacity; distinguish them from scheduler reservations and CPU quotas.
+- Size application workers, threads, connection pools, and heaps against those constraints using the selected runtime's behavior. Leave memory for native allocations, stacks, and other non-heap use; account for database memory that multiplies across operations and sessions. Use vendor-specific guidance when needed, not universal worker counts or heap percentages.
+- Include tmpfs usage in the memory budget; its size does not grant extra RAM and its contents may swap. Set required paths, ownership, size, and failure behavior deliberately. Check `/dev/shm` capacity for shared-memory consumers rather than bypassing isolation with host IPC. Distinguish container PID limits from user-scoped `nproc`; include file-descriptor headroom where relevant.
+- Exercise representative load under the configured constraints and record latency/throughput, peak memory, CPU throttling, OOM/restarts, and temporary-space exhaustion. Use this evidence to adjust the application or budget; increasing limits alone is not proof of a fix.
+
 ## Health and shutdown
 
 - Test useful behavior rather than PID existence.
@@ -56,6 +63,8 @@ Use a tiny init (`--init`) only when the main process cannot reap children. Do n
 - Write logs to stdout/stderr with stable structured fields where useful.
 - Do not depend on writable log files inside the image. Use a volume only when an application cannot stream logs.
 - Keep databases, uploads, queues, and durable state in explicit volumes or external services.
+- Identify stable volume/bind identities and actual application data paths. In a disposable environment, write representative application data, replace the service with its real deployment command, and verify the intended storage is reattached and the data remains usable; account for project/stack naming changes.
+- Use the application's supported consistent logical/physical backup method or documented shutdown/snapshot protocol. A raw copy of a live database volume is not a proven backup. Include all required recovery data and verify restoration into a disposable target; use database-specific guidance for the procedure.
 - A mount hides image content at the same path. For image-populated state or configuration, test both a fresh volume and an existing volume during upgrades; define initialization, migration, ownership, and rollback behavior so persisted files cannot silently mask the new image contents.
 - Assume the writable container layer is ephemeral.
 
@@ -66,3 +75,9 @@ Use a tiny init (`--init`) only when the main process cannot reap children. Do n
 - [Kubernetes sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)
 - [Kubernetes probes](https://kubernetes.io/docs/concepts/workloads/pods/probes/)
 - [Cloud Run container contract](https://cloud.google.com/run/docs/container-contract)
+- [Docker resource constraints](https://docs.docker.com/engine/containers/resource_constraints/)
+- [Docker tmpfs memory and swap behavior](https://docs.docker.com/engine/storage/tmpfs/)
+- [Docker run resource constraints and shared memory](https://docs.docker.com/engine/containers/run/#runtime-constraints-on-resources)
+- [Docker run ulimits](https://docs.docker.com/reference/cli/docker/container/run/#set-ulimits-in-container---ulimit)
+- [Docker volume identity and persistence](https://docs.docker.com/engine/storage/volumes/)
+- [PostgreSQL consistent filesystem backups](https://www.postgresql.org/docs/current/backup-file.html)
